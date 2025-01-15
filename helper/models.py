@@ -32,7 +32,7 @@ class Mailing(models.Model):
 
 class JournalLogs(models.Model):
     message = models.ForeignKey(Mailing, on_delete=models.CASCADE)
-    logs = models.TextField(verbose_name='Логирование')
+    message_error = models.TextField(verbose_name='Сообщение об ошибке')
     status = models.BooleanField(verbose_name='Статус')
     release_date = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
 
