@@ -15,8 +15,6 @@ class MailingAPIView(APIView):
 
         recipients = data.get('recepient') if isinstance(data.get('recepient'), list) else [data.get('recepient')]
 
-        print(data)
-
         if data.get('recepient'):
 
             for recepient in recipients:

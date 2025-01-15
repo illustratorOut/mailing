@@ -10,7 +10,8 @@ from .services import send_message_telegram
 
 
 @shared_task(bind=True)
-def send_email(self, message_id):
+def send_message(self, message_id):
+    """ Отправка сообщений """
     try:
         message = Mailing.objects.get(id=message_id)
 
@@ -40,10 +41,10 @@ def send_email(self, message_id):
 @shared_task(bind=True)
 def schedule_send(self, message_id, delay):
     if str(delay) == '0':
-        return send_email.delay(message_id)
+        return send_message.delay(message_id)
     if str(delay) == '1':
         eta = now() + timedelta(hours=1)
     elif str(delay) == '2':
         eta = now() + timedelta(days=1)
 
-    return send_email.apply_async((message_id,), eta=eta)
+    return send_message.apply_async((message_id,), eta=eta)
