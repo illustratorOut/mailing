@@ -15,7 +15,7 @@ class MailingAPIView(APIView):
 
         recipients = data.get('recepient') if isinstance(data.get('recepient'), list) else [data.get('recepient')]
 
-        if data.get('recepient'):
+        if data.get('recepient') and data.get('message'):
 
             for recepient in recipients:
                 if str(recepient).isdigit():
@@ -24,9 +24,9 @@ class MailingAPIView(APIView):
                     message_type = 'email'
 
                 message = Mailing(
-                    message=data['message'],
+                    message=data.get('message'),
                     recepient=recepient,
-                    delay=data['delay'],
+                    delay=data.get('delay'),
                     type=message_type,
                 )
                 message.save()
