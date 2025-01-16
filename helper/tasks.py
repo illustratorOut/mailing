@@ -35,16 +35,16 @@ def send_message(self, message_id):
         message = Mailing.objects.get(id=message_id)
         log = JournalLogs(message=message, status=False, message_error=str(e))
         log.save()
-        raise self.retry(exc=e, countdown=60 * 5)  # Повторная попытка через 5 минут
 
 
 @shared_task(bind=True)
 def schedule_send(self, message_id, delay):
     if str(delay) == '0':
         return send_message.delay(message_id)
-    if str(delay) == '1':
+    elif str(delay) == '1':
         eta = now() + timedelta(hours=1)
     elif str(delay) == '2':
         eta = now() + timedelta(days=1)
-
+    else:
+        eta = timedelta(seconds=0)
     return send_message.apply_async((message_id,), eta=eta)

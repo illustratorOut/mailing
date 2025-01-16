@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
 from pathlib import Path
 from dotenv import load_dotenv
 import os
@@ -110,9 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -128,19 +127,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# URL-адрес брокера сообщений
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
-
-# URL-адрес брокера результатов, также Redis
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
-
-# Часовой пояс для работы Celery
-CELERY_TIMEZONE = "Europe/Moscow"
-
-# Флаг отслеживания выполнения задач
+CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
-
-# Максимальное время на выполнение задачи
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 EMAIL_HOST = 'smtp.yandex.ru'
