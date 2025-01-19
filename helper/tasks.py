@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from datetime import timedelta
 
 from celery import shared_task
 from django.conf import settings
@@ -42,7 +42,7 @@ def schedule_send(self, message_id, delay):
     if str(delay) == '0' or delay is None:
         return send_message.delay(message_id)
     elif str(delay) == '1':
-        eta = now() + timedelta(minutes=1)
+        eta = now() + timedelta(hours=1)
     elif str(delay) == '2':
         eta = now() + timedelta(days=1)
     else:
