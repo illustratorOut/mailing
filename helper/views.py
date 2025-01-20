@@ -27,7 +27,7 @@ class MailingAPIView(APIView):
                     message=data.get('message'),
                     recepient=recepient,
                     delay=data.get('delay'),
-                    type=message_type,
+                    message_type=message_type,
                 )
                 message.save()
                 messages.append(message.id)
