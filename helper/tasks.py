@@ -1,39 +1,27 @@
 from datetime import timedelta
 
 from celery import shared_task
-from django.conf import settings
-from django.core.mail import send_mail
 from django.utils.timezone import now
 
 from .models import Mailing, JournalLogs
-from .services import send_message_telegram
+from .services import send_message_telegram, send_message_email
 
 
 @shared_task(bind=True)
 def send_message(self, message_id):
-    """ Отправка сообщений """
+    """Отправка сообщений"""
+    message = Mailing.objects.get(id=message_id)
+
     try:
-        message = Mailing.objects.get(id=message_id)
-
         if message.message_type == 'email':
-            send_mail(
-                subject="Уведомление",
-                message=message.message,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[message.recepient],
-                fail_silently=False,
-            )
-            print(f"Отправлено сообщение ({message.message}) на почту: {message.recepient}")
-        else:
-            status_code = send_message_telegram(message.recepient, message.message)
-            if status_code == 200:
-                print(f"Отправлено сообщение ({message.message}) в Telegram: {message.recepient}")
+            send_message_email(message.recepient, message.message)
+        elif message.message_type == 'telegram':
+            send_message_telegram(message.recepient, message.message)
 
-        log = JournalLogs(message=message, is_error=True)
+        log = JournalLogs(message=message, is_error=False)
         log.save()
     except Exception as e:
-        message = Mailing.objects.get(id=message_id)
-        log = JournalLogs(message=message, is_error=False, message_error=str(e))
+        log = JournalLogs(message=message, is_error=True, message_error=str(e))
         log.save()
 
 

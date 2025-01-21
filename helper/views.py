@@ -7,34 +7,32 @@ from .tasks import schedule_send
 
 
 class MailingAPIView(APIView):
-    '''Создание рассылки'''
+    """Создание рассылки"""
 
     def post(self, request):
         data = request.data
         messages = []
 
+        delay = data.get('delay')
         recipients = data.get('recepient') if isinstance(data.get('recepient'), list) else [data.get('recepient')]
 
         if data.get('recepient') and data.get('message'):
 
             for recepient in recipients:
-                if str(recepient).isdigit():
-                    message_type = 'telegram'
-                else:
-                    message_type = 'email'
+                message_type = 'telegram' if str(recepient).isdigit() else 'email'
 
                 message = Mailing(
                     message=data.get('message'),
                     recepient=recepient,
-                    delay=data.get('delay'),
+                    delay=delay,
                     message_type=message_type,
                 )
                 message.save()
                 messages.append(message.id)
 
             for message_id in messages:
-                schedule_send.delay(message_id, data.get('delay'))
+                schedule_send.delay(message_id, delay)
 
-            return Response({"status": "Сообщения поставлены в очередь"}, status=status.HTTP_202_ACCEPTED)
+            return Response({"status": "Сообщения добавлены в очередь"}, status=status.HTTP_202_ACCEPTED)
         else:
             return Response({"status": "Не валидный запрос"}, status=status.HTTP_400_BAD_REQUEST)
