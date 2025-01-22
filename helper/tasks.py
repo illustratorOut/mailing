@@ -3,8 +3,8 @@ from datetime import timedelta
 from celery import shared_task
 from django.utils.timezone import now
 
-from .models import Mailing, JournalLogs
-from .services import send_message_telegram, send_message_email
+from helper.models import Mailing, JournalLogs
+from helper.services import send_message_telegram, send_message_email
 
 
 @shared_task(bind=True)
